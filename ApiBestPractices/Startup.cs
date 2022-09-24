@@ -30,6 +30,7 @@ namespace ApiBestPractices
         {
             services.AddHttpClient<IPostRepository,PostService>();
             services.AddScoped<IPostRepository,PostService>();
+            services.AddScoped<IUrlDesignerRepository, UrlDesignerService>();
             services.AddDbContext<BPDbContext>();
             services.AddControllers();
             services.AddSwaggerGen(c =>

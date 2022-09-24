@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ApiBestPractices.Models.Migrations
 {
     [DbContext(typeof(BPDbContext))]
-    [Migration("20220921222819_mig1")]
+    [Migration("20220924112809_mig1")]
     partial class mig1
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -90,17 +90,12 @@ namespace ApiBestPractices.Models.Migrations
             modelBuilder.Entity("ApiBestPractices.Models.Posts.Post", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .UseIdentityColumn();
+                        .HasColumnType("int");
 
-                    b.Property<string>("ThumbnailUrl")
+                    b.Property<string>("Body")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Title")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Url")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("UserId")

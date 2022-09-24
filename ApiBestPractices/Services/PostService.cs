@@ -2,6 +2,7 @@
 using ApiBestPractices.Models.Posts;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Transactions;
 
@@ -13,7 +14,9 @@ namespace ApiBestPractices.Services
         {
             using (var BPDbContext = new BPDbContext())
             {
-                BPDbContext.Posts.Add(post);
+                bool anyItem = await BPDbContext.Posts.AnyAsync(x => x.Id == post.Id);
+                if (!anyItem)
+                    BPDbContext.Posts.Add(post);
                 await BPDbContext.SaveChangesAsync();
                 return post;
 
@@ -25,7 +28,8 @@ namespace ApiBestPractices.Services
             using (var BPDbContext = new BPDbContext())
             {
                 var deletedPost = await GetPostById(id);
-                BPDbContext.Posts.Remove(deletedPost);
+                if (deletedPost != null)
+                    BPDbContext.Posts.Remove(deletedPost);
                 await BPDbContext.SaveChangesAsync();
             }
         }
@@ -46,11 +50,11 @@ namespace ApiBestPractices.Services
             }
         }
 
-        public async Task<Post> GetPostByUserId(int userId)
+        public async Task<List<Post>> GetPostByUserId(int userId)
         {
             using (var BPDbContext = new BPDbContext())
             {
-                return await BPDbContext.Posts.FindAsync(userId);
+                //return await BPDbContext.Posts.FindAsync()
             }
         }
 

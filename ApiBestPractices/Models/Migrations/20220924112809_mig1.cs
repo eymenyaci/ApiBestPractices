@@ -56,12 +56,10 @@ namespace ApiBestPractices.Models.Migrations
                 name: "Posts",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Id = table.Column<int>(type: "int", nullable: false),
                     UserId = table.Column<int>(type: "int", nullable: false),
                     Title = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Url = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ThumbnailUrl = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Body = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {

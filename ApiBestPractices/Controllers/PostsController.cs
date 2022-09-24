@@ -17,27 +17,27 @@ namespace ApiBestPractices.Controllers
     {
         public readonly HttpClient _client = new HttpClient();
         private IPostRepository _postRepository;
-        //private static UrlDesigner _urlDesigner;
-
-
-        public PostsController(IPostRepository postRepository, HttpClient client/*, UrlDesigner urlDesigner*/)
+        private IUrlDesignerRepository _urlDesignerRepository;
+        
+        public PostsController(IPostRepository postRepository, HttpClient client,IUrlDesignerRepository urlDesignerRepository)
         {
             _postRepository = postRepository;
             _client = client;
-            //_urlDesigner = urlDesigner;
+            _urlDesignerRepository = urlDesignerRepository;
         }
 
 
         [HttpGet("[action]")]
         public async Task<IActionResult> Get()
         {
+            
             try
             {
-                //string exampleUrl = _urlDesigner.getUrl("posts");
-                HttpResponseMessage response = await _client.GetAsync("https://jsonplaceholder.typicode.com/posts");
+                HttpResponseMessage response = await _client.GetAsync(_urlDesignerRepository.getUrl("posts"));
                 response.EnsureSuccessStatusCode();
                 string responseBody = await response.Content.ReadAsStringAsync();
                 var data = JsonConvert.DeserializeObject<List<Post>>(responseBody);
+                
                 foreach (var dataItem in data)
                 {
                     Post postItem = new Post()
@@ -53,16 +53,38 @@ namespace ApiBestPractices.Controllers
                 return Ok(data);
                 
             }
-            catch (Exception e)
+            catch (HttpRequestException e)
             {
-
-                throw e;
+                Console.WriteLine("\nException Caught!");
+                Console.WriteLine("Message : {0}", e.Message);
+                return BadRequest();
             }
-            
-            
-
-
 
         }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            if (_postRepository.GetPostById(id) != null)
+            {
+                await _postRepository.DeletePost(id);
+                return Ok();
+            }
+
+            return BadRequest();
+        }
+        [HttpGet]
+        [Route("[action]/{userId}")]
+        public async Task<IActionResult> GetByUserId (int userId)
+        {
+            if (_postRepository.GetPostByUserId(userId) != null)
+            {
+                var post = await _postRepository.GetPostByUserId(userId);
+                return Ok(post);
+            }
+            return BadRequest();
+
+        }
+
     }
 }

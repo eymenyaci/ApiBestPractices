@@ -88,9 +88,7 @@ namespace ApiBestPractices.Models.Migrations
             modelBuilder.Entity("ApiBestPractices.Models.Posts.Post", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .UseIdentityColumn();
+                        .HasColumnType("int");
 
                     b.Property<string>("Body")
                         .HasColumnType("nvarchar(max)");
