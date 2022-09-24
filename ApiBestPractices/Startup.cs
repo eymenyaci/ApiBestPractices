@@ -1,4 +1,5 @@
 using ApiBestPractices.Models.Context;
+using ApiBestPractices.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -27,6 +28,8 @@ namespace ApiBestPractices
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddHttpClient<IPostRepository,PostService>();
+            services.AddScoped<IPostRepository,PostService>();
             services.AddDbContext<BPDbContext>();
             services.AddControllers();
             services.AddSwaggerGen(c =>

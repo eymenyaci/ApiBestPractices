@@ -26,6 +26,11 @@ namespace ApiBestPractices.Models.Context
         {
 
         }
+
+        public BPDbContext()
+        {
+        }
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseSqlServer(@"Server=DESKTOP-JFVV9NF;Database=JsonPlaceHolderDB;User Id=sa;Password=eymen123");

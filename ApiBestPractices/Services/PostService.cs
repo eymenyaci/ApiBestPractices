@@ -1,39 +1,67 @@
-﻿using ApiBestPractices.Models.Posts;
+﻿using ApiBestPractices.Models.Context;
+using ApiBestPractices.Models.Posts;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Transactions;
 
 namespace ApiBestPractices.Services
 {
     public class PostService : IPostRepository
     {
-        public Task<Post> CreatePost(Post post)
+        public async Task<Post> CreatePost(Post post)
         {
-            throw new System.NotImplementedException();
+            using (var BPDbContext = new BPDbContext())
+            {
+                BPDbContext.Posts.Add(post);
+                await BPDbContext.SaveChangesAsync();
+                return post;
+
+            }
         }
 
-        public Task DeletePost(int id)
+        public async Task DeletePost(int id)
         {
-            throw new System.NotImplementedException();
+            using (var BPDbContext = new BPDbContext())
+            {
+                var deletedPost = await GetPostById(id);
+                BPDbContext.Posts.Remove(deletedPost);
+                await BPDbContext.SaveChangesAsync();
+            }
         }
 
-        public Task<List<Post>> GetAllPosts()
+        public async Task<List<Post>> GetAllPosts()
         {
-            throw new System.NotImplementedException();
+            using (var BPDbContext = new BPDbContext())
+            {
+                return await BPDbContext.Posts.ToListAsync();
+            }
         }
 
-        public Task<Post> GetPostById(int id)
+        public async Task<Post> GetPostById(int id)
         {
-            throw new System.NotImplementedException();
+            using (var BPDbContext = new BPDbContext())
+            {
+                return await BPDbContext.Posts.FindAsync(id);
+            }
         }
 
-        public Task<Post> GetPostByUserId(int userId)
+        public async Task<Post> GetPostByUserId(int userId)
         {
-            throw new System.NotImplementedException();
+            using (var BPDbContext = new BPDbContext())
+            {
+                return await BPDbContext.Posts.FindAsync(userId);
+            }
         }
 
-        public Task<Post> UpdatePost(Post post)
+        public async Task<Post> UpdatePost(Post post)
         {
-            throw new System.NotImplementedException();
+            using (var BPDbContext = new BPDbContext())
+            {
+                BPDbContext.Posts.Update(post);
+                await BPDbContext.SaveChangesAsync();
+                return post;
+            }
         }
     }
 }

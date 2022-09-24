@@ -10,8 +10,7 @@ namespace ApiBestPractices.Models
 {
     public class UrlDesigner
     {
-        public readonly HttpClient _client = new HttpClient();
-        private static List<Post> _posts = new List<Post>();
+        
         public string BaseUrl { get; set; } = "https://jsonplaceholder.typicode.com";
         public string UserUrl { get; set; } = "users";
         public string PhotosUrl { get; set; } = "photos";
@@ -20,39 +19,16 @@ namespace ApiBestPractices.Models
         public string CommentsUrl { get; set; } = "comments";
         public string TodosUrl { get; set; } = "users";
 
-        public async Task<string> GetResponse()
+        /// <summary>
+        /// Hangi path'e istek atacağımızı bu metot ile belirliyoruz.
+        /// </summary>
+        /// <param name="pathItem"></param>
+        /// <returns></returns>
+        public string getUrl(string pathItem)
         {
-            try
-            {
-                HttpResponseMessage response = await _client.GetAsync("https://jsonplaceholder.typicode.com/posts");
-                response.EnsureSuccessStatusCode();
-                string responseBody = await response.Content.ReadAsStringAsync();
-                var data = JsonConvert.DeserializeObject<List<Post>>(responseBody);
-
-                if (data != null)
-                    _posts.AddRange(data);
-                return Ok(_posts);
-
-
-            }
-            catch (HttpRequestException e)
-            {
-                Console.WriteLine("\nException Caught!");
-                Console.WriteLine("Message : {0}", e.Message);
-                return BadRequest();
-            }
-
-
+            string pathUrl = BaseUrl + "/" + pathItem;
+            return pathUrl;
         }
-
-        private string Ok(List<Post> posts)
-        {
-            throw new NotImplementedException();
-        }
-
-        private string BadRequest()
-        {
-            throw new NotImplementedException();
-        }
+        
     }
 }
