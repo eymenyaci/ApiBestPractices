@@ -46,7 +46,7 @@ namespace ApiBestPractices.Services
         {
             using (var BPDbContext = new BPDbContext())
             {
-                return await BPDbContext.Posts.FindAsync(id);
+                return await BPDbContext.Posts.FirstOrDefaultAsync(x=>x.Id == id);
             }
         }
 
@@ -54,7 +54,8 @@ namespace ApiBestPractices.Services
         {
             using (var BPDbContext = new BPDbContext())
             {
-                //return await BPDbContext.Posts.FindAsync()
+                return await BPDbContext.Posts.Where(x => x.UserId == userId).ToListAsync();
+
             }
         }
 
@@ -62,9 +63,16 @@ namespace ApiBestPractices.Services
         {
             using (var BPDbContext = new BPDbContext())
             {
-                BPDbContext.Posts.Update(post);
+                var updatedPost = await BPDbContext.Posts.Where(x => x.Id == post.Id).FirstOrDefaultAsync();
+                if (post != null)
+                {
+                    updatedPost.Title = post.Title;
+                    updatedPost.UserId = post.UserId;
+                    updatedPost.Body = post.Body;
+                }
                 await BPDbContext.SaveChangesAsync();
-                return post;
+                return updatedPost;
+
             }
         }
     }

@@ -8,7 +8,7 @@ using System.Net.Http;
 using System;
 using System.Threading.Tasks;
 using ApiBestPractices.Services;
-using System.Reflection.Metadata.Ecma335;
+
 
 namespace ApiBestPractices.Controllers
 {
@@ -26,9 +26,15 @@ namespace ApiBestPractices.Controllers
             _urlDesignerRepository = urlDesignerRepository;
         }
 
-
         [HttpGet("[action]")]
         public async Task<IActionResult> Get()
+        {
+            var allPost = await _postRepository.GetAllPosts();
+            return Ok(allPost);
+        }
+
+        [HttpGet("[action]")]
+        public async Task<IActionResult> Create()
         {
             
             try
@@ -62,13 +68,13 @@ namespace ApiBestPractices.Controllers
 
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("[action]/{id}")]
         public async Task<IActionResult> Delete(int id)
         {
             if (_postRepository.GetPostById(id) != null)
             {
                 await _postRepository.DeletePost(id);
-                return Ok();
+                return Ok(id + " deleted");
             }
 
             return BadRequest();
@@ -84,6 +90,32 @@ namespace ApiBestPractices.Controllers
             }
             return BadRequest();
 
+        }
+        /// <summary>
+        /// Kontrol edilecek.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("[action]/{Id}")]
+        public async Task<IActionResult> Get(int id)
+        {
+            if (_postRepository.GetPostByUserId(id) != null)
+            {
+                var post = await _postRepository.GetPostById(id);   
+                return Ok(post);
+            }
+            return BadRequest();
+
+        }
+        [HttpPut]
+        public async Task<IActionResult> Put(Post post)
+        {
+                if (!ModelState.IsValid)
+                    return BadRequest("Not a valid model");
+                var postItem = await _postRepository.UpdatePost(post);
+                return Ok(postItem);
+                
         }
 
     }
