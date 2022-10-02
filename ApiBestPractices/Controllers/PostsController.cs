@@ -26,6 +26,7 @@ namespace ApiBestPractices.Controllers
             _urlDesignerRepository = urlDesignerRepository;
         }
 
+        
         [HttpGet("[action]")]
         public async Task<IActionResult> Get()
         {
@@ -91,11 +92,7 @@ namespace ApiBestPractices.Controllers
             return BadRequest();
 
         }
-        /// <summary>
-        /// Kontrol edilecek.
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
+        
         [HttpGet]
         [Route("[action]/{Id}")]
         public async Task<IActionResult> Get(int id)

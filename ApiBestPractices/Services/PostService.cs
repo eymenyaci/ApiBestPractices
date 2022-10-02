@@ -16,7 +16,7 @@ namespace ApiBestPractices.Services
             {
                 bool anyItem = await BPDbContext.Posts.AnyAsync(x => x.Id == post.Id);
                 if (!anyItem)
-                    BPDbContext.Posts.Add(post);
+                    await BPDbContext.Posts.AddAsync(post);
                 await BPDbContext.SaveChangesAsync();
                 return post;
 
@@ -46,7 +46,7 @@ namespace ApiBestPractices.Services
         {
             using (var BPDbContext = new BPDbContext())
             {
-                return await BPDbContext.Posts.FirstOrDefaultAsync(x=>x.Id == id);
+                return await BPDbContext.Posts.FirstOrDefaultAsync(x => x.Id == id);
             }
         }
 

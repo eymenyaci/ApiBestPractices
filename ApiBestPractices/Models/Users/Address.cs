@@ -15,5 +15,10 @@ namespace ApiBestPractices.Models.Users
         public virtual User User { get; set; }
         public virtual ICollection<Geo> Geos { get; set; }
 
+        public Address()
+        {
+            List<Geo> geo = new List<Geo>();
+        }
+
     }
 }

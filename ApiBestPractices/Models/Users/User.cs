@@ -14,5 +14,11 @@ namespace ApiBestPractices.Models.Users
         public ICollection<Company> Companies { get; set; }
         public  ICollection<Address> Addresses { get; set; }
 
+        public User()
+        {
+            List<Address> addresses = new List<Address>();
+            List<Company> companies = new List<Company>();
+        }
+
     }
 }
