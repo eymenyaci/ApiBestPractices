@@ -5,11 +5,12 @@ namespace ApiBestPractices.Models.Users
 {
     public class Geo
     {
-        [Key]
-        public int GeoId { get; set; }
+      
+        public int Id { get; set; }
+        public int AddressId { get; set; }
         public double Lat { get; set; }
         public double Lng { get; set; }
-        public virtual Address Address { get; set; }    
+        public Address Address { get; set; }    
         
     }
 }

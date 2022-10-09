@@ -1,4 +1,5 @@
-﻿using System.Data.Entity;
+﻿using ApiBestPractices.Models.Users;
+using System.Data.Entity;
 
 namespace ApiBestPractices.Models.Albums
 {
@@ -7,5 +8,6 @@ namespace ApiBestPractices.Models.Albums
         public int UserId  { get; set; }
         public int Id  { get; set; }
         public string Title  { get; set; }
+        public User User { get; set; }
     }
 }

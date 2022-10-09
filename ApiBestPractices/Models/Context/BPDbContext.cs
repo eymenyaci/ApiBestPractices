@@ -22,7 +22,7 @@ namespace ApiBestPractices.Models.Context
         public DbSet<Address> Addresses { get; set; }
         public DbSet<User> Users { get; set; }
 
-        public BPDbContext(DbContextOptions<BPDbContext> options) : base (options)
+        public BPDbContext(DbContextOptions<BPDbContext> options) : base(options)
         {
 
         }
@@ -33,15 +33,47 @@ namespace ApiBestPractices.Models.Context
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer(@"Server=DESKTOP-JFVV9NF;Database=JsonPlaceHolderDB;User Id=sa;Password=eymen123");
+            optionsBuilder.UseSqlServer(@"Server=DESKTOP-JFVV9NF;Database=JsonDataDB;User Id=sa;Password=eymen123");
         }
 
-        
+        //protected override void OnModelCreating(ModelBuilder modelBuilder)
+        //{
+        //    base.OnModelCreating(modelBuilder);
+
+
+        //    modelBuilder.Entity<User>()
+        //        .HasKey(u => u.Id);
+
+        //    modelBuilder.Entity<Address>()
+        //        .HasKey(a => a.Id);
+
+        //    modelBuilder.Entity<Geo>()
+        //        .HasKey(g => g.Id);
+
+        //    modelBuilder.Entity<User>()
+        //        .HasOne(u => u.Address)
+        //        .WithOne(u => u.User)
+        //        .HasForeignKey<Address>(u => u.Id);
+
+        //    modelBuilder.Entity<User>()
+        //        .HasOne(u => u.Company)
+        //        .WithOne(u => u.User)
+        //        .HasForeignKey<Company>(u => u.Id);
+
+        //    modelBuilder.Entity<Address>()
+        //        .HasOne(a => a.Geo)
+        //        .WithOne(a => a.Address)
+        //        .HasForeignKey<Geo>(a => a.Id);
+
+
+
+        //}
+
     }
 
-        
 
-        
-        
-    
+
+
+
+
 }

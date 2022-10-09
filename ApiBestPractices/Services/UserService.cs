@@ -15,12 +15,39 @@ namespace ApiBestPractices.Services
         {
             using (var BPDbContext = new BPDbContext())
             {
-                //bool anyItem = await BPDbContext.Users.AnyAsync(x => x.Id == user.Id);
-                
-                await BPDbContext.Users.AddAsync(user);
-                
-                await BPDbContext.SaveChangesAsync();
+                if (user != null)
+                {
+                    bool anyChanges = false;
+                    bool hasUser = BPDbContext.Users.Where(u => u.Username == user.Username).Any();
+                    if (!hasUser)
+                    {
+                        await BPDbContext.Users.AddAsync(user);
+                        anyChanges = true;
+                    }
+                    bool hasUserAddress = BPDbContext.Addresses.Where(a => a.UserId == user.Address.UserId).Any();
+                    if (!hasUserAddress)
+                    {
+                        await BPDbContext.Addresses.AddAsync(user.Address);
+                        anyChanges = true;
+                    }
+                    bool hasUserCompany = BPDbContext.Companies.Where(a => a.UserId == user.Company.UserId).Any();
+                    if (!hasUserCompany)
+                    {
+                        await BPDbContext.Companies.AddAsync(user.Company);
+                        anyChanges = true;
+                    }
+                    bool hasAddressGeo = BPDbContext.Geos.Where(a => a.AddressId == user.Address.Geo.AddressId).Any();
+                    if (!hasAddressGeo)
+                    {
+                        await BPDbContext.Geos.AddAsync(user.Address.Geo);
+                        anyChanges = true;
+                    }
+                    if (anyChanges)
+                    {
+                        await BPDbContext.SaveChangesAsync();
+                    }
 
+                }
                 return user;
 
             }
@@ -28,13 +55,13 @@ namespace ApiBestPractices.Services
 
         public async Task DeleteUser(int id)
         {
-            using(var BPDbContext = new BPDbContext())
+            using (var BPDbContext = new BPDbContext())
             {
                 var deletedUser = await GetByUserId(id);
-                if (deletedUser!=null)
+                if (deletedUser != null)
                     BPDbContext.Users.Remove(deletedUser);
                 await BPDbContext.SaveChangesAsync();
- 
+
             }
         }
 
@@ -42,13 +69,16 @@ namespace ApiBestPractices.Services
         {
             using (BPDbContext BPDbContext = new BPDbContext())
             {
-                return await BPDbContext.Users.ToListAsync();
+                
+                var users = await BPDbContext.Users.ToListAsync();
+                return users;
+                
             }
         }
 
         public Task<User> GetByUserId(int id)
         {
-           using (BPDbContext BPDbContext = new BPDbContext())
+            using (BPDbContext BPDbContext = new BPDbContext())
             {
                 return BPDbContext.Users.FirstOrDefaultAsync(x => x.Id == id);
             }
@@ -58,7 +88,7 @@ namespace ApiBestPractices.Services
         {
             using (BPDbContext BPDbContext = new BPDbContext())
             {
-                return await BPDbContext.Users.FirstOrDefaultAsync(x=>x.Email == email);
+                return await BPDbContext.Users.FirstOrDefaultAsync(x => x.Email == email);
             }
         }
 
@@ -66,7 +96,7 @@ namespace ApiBestPractices.Services
         {
             using (BPDbContext BPDbContext = new BPDbContext())
             {
-                return await BPDbContext.Users.FirstOrDefaultAsync(x=>x.Phone == phone);
+                return await BPDbContext.Users.FirstOrDefaultAsync(x => x.Phone == phone);
             }
         }
 
@@ -74,13 +104,13 @@ namespace ApiBestPractices.Services
         {
             using (BPDbContext BPDbContext = new BPDbContext())
             {
-                return await BPDbContext.Users.FirstOrDefaultAsync(x=>x.Username == username);
+                return await BPDbContext.Users.FirstOrDefaultAsync(x => x.Username == username);
             }
         }
 
         public async Task<User> UpdateUser(User user)
         {
-            using(BPDbContext BPDbContext = new BPDbContext())
+            using (BPDbContext BPDbContext = new BPDbContext())
             {
                 var updatedUser = await BPDbContext.Users.Where(x => x.Id == user.Id).FirstOrDefaultAsync();
                 if (updatedUser != null)
@@ -90,8 +120,7 @@ namespace ApiBestPractices.Services
                     updatedUser.Email = user.Email;
                     updatedUser.Phone = user.Phone;
                     updatedUser.Website = user.Website;
-                    updatedUser.Companies = user.Companies;
-                    updatedUser.Addresses = user.Addresses;
+                    
                 }
 
                 BPDbContext.Users.Update(updatedUser);
@@ -99,7 +128,7 @@ namespace ApiBestPractices.Services
 
                 return updatedUser;
 
-                
+
             }
         }
     }

@@ -5,11 +5,12 @@ namespace ApiBestPractices.Models.Users
 {
     public class Company
     {
-        [Key]
-        public int CompanyId { get; set; }
+        
+        public int Id { get; set; }
+        public int UserId { get; set; }
         public string Name { get; set; }
         public string CatchPhrase { get; set; }
         public string Bs { get; set; }
-        public virtual User User { get; set; }
+        public User User { get; set; }
     }
 }

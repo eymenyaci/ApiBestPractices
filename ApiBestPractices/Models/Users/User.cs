@@ -1,4 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using ApiBestPractices.Models.Albums;
+using ApiBestPractices.Models.Posts;
+using ApiBestPractices.Models.Todos;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Metadata;
+using System.Collections.Generic;
 using System.Data.Entity;
 
 namespace ApiBestPractices.Models.Users
@@ -11,14 +15,22 @@ namespace ApiBestPractices.Models.Users
         public string Email { get; set; }
         public string Phone { get; set; }
         public string Website { get; set; }
-        public ICollection<Company> Companies { get; set; }
-        public  ICollection<Address> Addresses { get; set; }
+        public Company Company { get; set; }
+        public Address Address { get; set; }
+        public ICollection<Post> Posts { get; set; }
+        public ICollection<Todo> Todos { get; set; }
+        public ICollection<Album> Albums { get; set; }
 
         public User()
         {
-            List<Address> addresses = new List<Address>();
-            List<Company> companies = new List<Company>();
+            if (Address != null)
+            {
+                int addressId = 0;
+                Address.Id = addressId + 1;
+            }
+            
         }
+
 
     }
 }
