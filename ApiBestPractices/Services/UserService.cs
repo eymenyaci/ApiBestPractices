@@ -3,9 +3,8 @@ using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Transactions;
 using ApiBestPractices.Models.Users;
-using ApiBestPractices.Models.Posts;
+
 
 namespace ApiBestPractices.Services
 {
@@ -69,18 +68,42 @@ namespace ApiBestPractices.Services
         {
             using (BPDbContext BPDbContext = new BPDbContext())
             {
-                
-                var users = await BPDbContext.Users.ToListAsync();
-                return users;
-                
+
+                List<User> lastUserList = new List<User>();
+                var userList = await BPDbContext.Users.ToListAsync();
+                var addresses = await BPDbContext.Addresses.ToListAsync();
+                var geos = await BPDbContext.Geos.ToListAsync();
+                var companies = await BPDbContext.Companies.ToListAsync();
+
+                foreach (var userItem in userList)
+                {
+
+                    if (userItem != null)
+                    {
+                        var address = addresses.Where(a => a.UserId == userItem.Id).FirstOrDefault();
+                        var geo = geos.Where(g => g.AddressId == address.Id).FirstOrDefault();
+                        var company = companies.Where(c => c.UserId == userItem.Id).FirstOrDefault();
+                        address.Geo = geo;
+                        userItem.Address = address;
+                        userItem.Company = company;
+                        lastUserList.Add(userItem);
+                    }
+
+                }
+
+                return lastUserList;
+
             }
         }
 
-        public Task<User> GetByUserId(int id)
+        public async Task<User> GetByUserId(int id)
         {
             using (BPDbContext BPDbContext = new BPDbContext())
             {
-                return BPDbContext.Users.FirstOrDefaultAsync(x => x.Id == id);
+                var users = await GetAllUser();
+                User user = users.FirstOrDefault(u => u.Id == id);
+                return user;
+                
             }
         }
 
@@ -88,7 +111,9 @@ namespace ApiBestPractices.Services
         {
             using (BPDbContext BPDbContext = new BPDbContext())
             {
-                return await BPDbContext.Users.FirstOrDefaultAsync(x => x.Email == email);
+                var users = await GetAllUser();
+                User user = users.FirstOrDefault(u => u.Email == email);
+                return user;
             }
         }
 
@@ -96,7 +121,9 @@ namespace ApiBestPractices.Services
         {
             using (BPDbContext BPDbContext = new BPDbContext())
             {
-                return await BPDbContext.Users.FirstOrDefaultAsync(x => x.Phone == phone);
+                var users = await GetAllUser();
+                User user = users.FirstOrDefault(u => u.Phone == phone);
+                return user;
             }
         }
 
@@ -104,7 +131,9 @@ namespace ApiBestPractices.Services
         {
             using (BPDbContext BPDbContext = new BPDbContext())
             {
-                return await BPDbContext.Users.FirstOrDefaultAsync(x => x.Username == username);
+                var users = await GetAllUser();
+                User user = users.FirstOrDefault(u => u.Username == username);
+                return user;
             }
         }
 
@@ -112,7 +141,7 @@ namespace ApiBestPractices.Services
         {
             using (BPDbContext BPDbContext = new BPDbContext())
             {
-                var updatedUser = await BPDbContext.Users.Where(x => x.Id == user.Id).FirstOrDefaultAsync();
+                var updatedUser = await GetByUserId(user.Id);
                 if (updatedUser != null)
                 {
                     updatedUser.Name = user.Name;
@@ -120,7 +149,22 @@ namespace ApiBestPractices.Services
                     updatedUser.Email = user.Email;
                     updatedUser.Phone = user.Phone;
                     updatedUser.Website = user.Website;
-                    
+
+                    /*=============Address=================*/
+
+                    updatedUser.Address.Street = user.Address.Street;
+                    updatedUser.Address.City = user.Address.City;
+                    updatedUser.Address.Suite = user.Address.Suite;
+                    updatedUser.Address.ZipCode = user.Address.ZipCode;
+                    updatedUser.Address.Geo.Lat = user.Address.Geo.Lat;
+                    updatedUser.Address.Geo.Lng = user.Address.Geo.Lng;
+
+                    /*=============Company=================*/
+
+                    updatedUser.Company.Name = user.Company.Name;
+                    updatedUser.Company.CatchPhrase = user.Company.CatchPhrase;
+                    updatedUser.Company.Bs = user.Company.Bs;
+
                 }
 
                 BPDbContext.Users.Update(updatedUser);

@@ -143,7 +143,19 @@ namespace ApiBestPractices.Controllers
             }
             return BadRequest();
         }
+        [HttpPut]
+        public async Task<IActionResult> Put(User user)
+        {
+            if (user != null && user.Id!=0)
+            {
+                var updatedUser = await _userRepository.UpdateUser(user);
+                return Ok(updatedUser);
+            }
 
+            return BadRequest();
+
+
+        }
 
 
     }

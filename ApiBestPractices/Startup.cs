@@ -35,7 +35,7 @@ namespace ApiBestPractices
             services.AddScoped<IUserRepository, UserService>();
             services.AddScoped<IUrlDesignerRepository, UrlDesignerService>();
             services.AddDbContext<BPDbContext>();
-            services.AddControllers();
+            services.AddControllers().AddNewtonsoftJson(opt => opt.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "ApiBestPractices", Version = "v1" });
